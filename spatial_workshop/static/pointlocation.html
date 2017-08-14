@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/leaflet.css" />
+<script src="/static/leaflet.js"></script>
+<script src="/static/jquery.min.js"></script>
+<style>
+#mymap {
+ float: left;
+ height: 700px;
+ width: calc(100% - 250px);
+}
+#mycontrols {
+ float: right;
+}
+</style>
+</head>
+<body>
+ <div id="mymap"></div>
+ <div id="mycontrols">
+ 	<div>
+		<button type="button" id="addprocessed">Add processed data</button>
+	</div>
+</div>
+
+<script>
+var mymap = L.map('mymap').setView([0, 0], 2);
+L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+        maxZoom: 18, 
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attribution">CARTO</a>'
+      }).addTo(mymap);
+var base_data = "deu.geojson";
+$.getJSON("/static/" + base_data, function(data){
+	var geojson = L.geoJSON(data);
+	geojson.addTo(mymap);
+	mymap.fitBounds(geojson.getBounds());
+}).fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    alert( "Request Failed: " + err );
+	});
+
+var processor_path = "/pip";
+$('#addprocessed').one("click", function(){
+	$.getJSON(processor_path, function(data){
+        var markerIn = {
+            radius: 8,
+            fillColor: "#007800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+        var markerOut = {
+            radius: 8,
+            fillColor: "#ff0000",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+		var geojson = L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+                console.log(feature);
+                if (feature.properties.in_polygon) {
+                    return L.circleMarker(latlng, markerIn);
+                } else {
+                    return L.circleMarker(latlng, markerOut);
+                }
+            }
+		});
+		geojson.addTo(mymap);
+		mymap.fitBounds(geojson.getBounds());
+	}).done(function() {
+    	alert( "data added!" );
+    	$('#addprocessed').prop("disabled", true);
+  	})
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    alert( "Request Failed: " + err );
+	});
+});
+</script>
+
+</body>
+</html>
