@@ -1,8 +1,8 @@
 from flask import Flask, current_app, jsonify
-from process_points_cn import PointProcessor
-from melkman import Melkman
-from triangulate_polygon import TriangulatePolygon
-from triangulate_points import TriangulatePoints
+from .process_points_cn import PointProcessor
+from .melkman import Melkman
+from .triangulate_polygon import TriangulatePolygon
+from .triangulate_points import TriangulatePoints
 app = Flask(__name__)
 
 
