@@ -1,5 +1,5 @@
 import json
-from utilities import test_ccw
+from .utilities import test_ccw
 
 
 class TriangulatePolygon:

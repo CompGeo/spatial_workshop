@@ -1,6 +1,6 @@
 import json
 from collections import deque
-from utilities import test_ccw
+from .utilities import test_ccw
 
 
 class Melkman:

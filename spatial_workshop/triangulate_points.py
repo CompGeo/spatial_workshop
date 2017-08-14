@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
-from crossing_number import point_in_polygon
-from utilities import test_ccw
+from .crossing_number import point_in_polygon
+from .utilities import test_ccw
 
 
 class TriangulatePoints:
